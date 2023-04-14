@@ -10,7 +10,19 @@ public class Kosik {
         seznamPolozek = new ArrayList<>();
     }
     public void pridej(Zbozi zbozi) { //dodělat aby se tam nepřidalo 2krát stejné zboží
-        seznamPolozek.add(new PolozkaKosiku(zbozi, 1));
+        for (var polozka : seznamPolozek)
+        {
+            Zbozi zb1 = polozka.getZbozi();
+            if (zb1 == zbozi)
+            {
+
+                polozka.zvysit();
+            }
+            else
+                {
+                seznamPolozek.add(new PolozkaKosiku(zbozi, 1));
+            }
+        }
     }
 
     public void odeber(int index) { //dodělat kontrola jestli je index v platném intervalu
