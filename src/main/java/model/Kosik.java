@@ -13,9 +13,8 @@ public class Kosik {
         for (var polozka : seznamPolozek)
         {
             Zbozi zb1 = polozka.getZbozi();
-            if (zb1 == zbozi)
+            if (zbozi == zb1)
             {
-
                 polozka.zvysit();
             }
             else
@@ -26,15 +25,16 @@ public class Kosik {
     }
 
     public void odeber(int index) { //dodělat kontrola jestli je index v platném intervalu
-        seznamPolozek.remove(index);
+        if (index > 0) seznamPolozek.remove(index);
     }
 
     public void zvysit(int index) {
-        seznamPolozek.get(index).zvysit();
+        if (index > 0) seznamPolozek.get(index).zvysit();
+
     }
 
     public void snizit(int index) {
-        seznamPolozek.get(index).snizit();
+        if (index > 0) seznamPolozek.get(index).snizit();
     }
 
     public void vysypat() {

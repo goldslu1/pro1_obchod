@@ -14,10 +14,16 @@ public class Sklad {
         seznamZbozi.add(zbozi);
     }
     public Zbozi getZbozi(int index){ //zde taky jestli je správný index
-        return seznamZbozi.get(index);
+        Zbozi zbozi = null;
+        if (index > 0){
+            zbozi = seznamZbozi.get(index);
+        }
+        return zbozi;
     }
     public void smazZbozi(int index) { //zde taky jestli je správný index
-        seznamZbozi.remove(index);
+        if (index > 0){
+            seznamZbozi.remove(index);
+        }
     }
     public void smazVsechnoZbozi() {
         seznamZbozi.clear();
