@@ -3,7 +3,11 @@ package model;
 import serdes.SerDes;
 
 import javax.swing.table.AbstractTableModel;
+
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,21 +27,22 @@ public class Sklad extends AbstractTableModel { //tímto zdědíme sklad, musi s
 
     public void pridejZbozi(Zbozi zbozi){
         seznamZbozi.add(zbozi);
+        fireTableDataChanged();
     }
-    public Zbozi getZbozi(int index){ //zde taky jestli je správný index
+    public Zbozi getZbozi(int index){
         Zbozi zbozi = null;
-        if (index > 0){
+        if (index >= 0){
             zbozi = seznamZbozi.get(index);
         }
         return zbozi;
     }
-    public void smazZbozi(int index) { //zde taky jestli je správný index
-        if (index > 0){
-            seznamZbozi.remove(index);
-        }
+    public void smazZbozi(int index) {
+        seznamZbozi.remove(index);
+        fireTableDataChanged();
     }
     public void smazVsechnoZbozi() {
         seznamZbozi.clear();
+        fireTableDataChanged();
     }
 
     public void nacti(SerDes serdes, String soubor) throws IOException { //použití interface
@@ -47,6 +52,23 @@ public class Sklad extends AbstractTableModel { //tímto zdědíme sklad, musi s
 
     public void uloz(SerDes serdes, String soubor) throws IOException{ //kontrolovaná výjimka, vždy se musi nejak zabezpecit, pomoci throw ji predavame dal
         serdes.uloz(soubor, seznamZbozi);
+    }
+
+    public void ulozCsv(Path soubor) throws IOException {
+        Files.writeString(soubor, "", StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
+        for (Zbozi zbozi : seznamZbozi) {
+            String radek = zbozi.getNazev() + ";" + zbozi.getCena() + ";" + zbozi.getPocet() + System.lineSeparator();
+            Files.writeString(soubor, radek, StandardOpenOption.APPEND);
+        }
+    }
+
+    public void nactiCsv(Path soubor) throws IOException {
+        seznamZbozi.clear();
+        for (String radek : Files.readAllLines(soubor)) {
+            String[] rozdeleno = radek.split(";");
+            pridejZbozi(new Zbozi(rozdeleno[0], Float.parseFloat(rozdeleno[1]), Integer.parseInt(rozdeleno[2])));
+        }
     }
 
     @Override
@@ -75,9 +97,7 @@ public class Sklad extends AbstractTableModel { //tímto zdědíme sklad, musi s
             case SLOUPEC_POCET -> {
                 return Integer.class;
             }
-            default -> {
-                throw new IllegalArgumentException("Nesprávný sloupec skladu");
-            }
+            default -> throw new IllegalArgumentException("Nesprávný sloupec skladu");
         }
     }
 
@@ -99,9 +119,7 @@ public class Sklad extends AbstractTableModel { //tímto zdědíme sklad, musi s
             case SLOUPEC_POCET -> {
                 return zbozi.getPocet();
             }
-            default -> {
-                throw new IllegalArgumentException("Nesprávný sloupec skladu");
-            }
+            default -> throw new IllegalArgumentException("Nesprávný sloupec skladu");
         }
     }
 
@@ -110,21 +128,10 @@ public class Sklad extends AbstractTableModel { //tímto zdědíme sklad, musi s
         Zbozi zbozi = seznamZbozi.get(rowIndex);
 
         switch (columnIndex) {
-            case SLOUPEC_NAZEV -> {
-                zbozi.setNazev((String)hodnota);
-                break;
-            }
-            case SLOUPEC_CENA -> {
-                zbozi.setCena((Float)hodnota);
-                break;
-            }
-            case SLOUPEC_POCET -> {
-                zbozi.setPocet((Integer)hodnota);
-                break;
-            }
-            default -> {
-                throw new IllegalArgumentException("Nesprávný sloupec skladu");
-            }
+            case SLOUPEC_NAZEV -> zbozi.setNazev((String)hodnota);
+            case SLOUPEC_CENA -> zbozi.setCena((Float)hodnota);
+            case SLOUPEC_POCET -> zbozi.setPocet((Integer)hodnota);
+            default -> throw new IllegalArgumentException("Nesprávný sloupec skladu");
         }
 
         fireTableCellUpdated(rowIndex, columnIndex); //která buňka se změnila a zareaguje a aktualizuje v skladě
