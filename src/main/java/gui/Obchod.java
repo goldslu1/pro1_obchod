@@ -126,7 +126,17 @@ public class Obchod {     //Přidat panel tlačítek s tlačítkama pro přidáv
         JButton btPridej = new JButton();
 
         btPridej.setText("Přidat");
-        btPridej.addActionListener(e -> sklad.pridejZbozi(new Zbozi("", 0, 0)));
+        btPridej.addActionListener(evt -> {
+            try {
+                String nazev = JOptionPane.showInputDialog(hlavniPanel, "Zadejte název zboží:", "Nové Zboží", JOptionPane.PLAIN_MESSAGE);
+                if (nazev.equals("")) {
+                    JOptionPane.showMessageDialog(hlavniPanel, "Název nesmí být prázdný", "Upozornění", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    sklad.pridejZbozi(new Zbozi(nazev, 0, 0));
+                }
+            }
+            catch (Exception e) {}
+        });
 
         JButton btOdeber = new JButton();
         btOdeber.setText("Odebrat");
