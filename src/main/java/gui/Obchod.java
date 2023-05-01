@@ -121,7 +121,7 @@ public class Obchod {     //Přidat panel tlačítek s tlačítkama pro přidáv
         panelSkladu.add(spTabulka);
     }
 
-    private void vytvorPanelTlacitek() {
+    private void vytvorPanelTlacitek(){
         Box box = Box.createVerticalBox();
         JButton btPridej = new JButton();
 
