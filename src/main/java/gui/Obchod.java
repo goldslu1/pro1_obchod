@@ -20,6 +20,7 @@ public class Obchod {     //Přidat panel tlačítek s tlačítkama pro přidáv
     public Obchod() {
         sklad = new Sklad();
         path = Path.of(System.getProperty("user.home"), "IdeaProjects\\pro1_obchod", "sklad.csv");
+        //path = FileSystems.getDefault().getPath("U:\\PRO1\\pro1_obchod_final","sklad.csv");
         try{
             sklad.nacti(new GsonSerDes(), "sklad.json");
         } catch (Exception e){
