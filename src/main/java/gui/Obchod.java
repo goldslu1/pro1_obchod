@@ -5,6 +5,8 @@ import model.Zbozi;
 import serdes.GsonSerDes;
 
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.nio.file.Path;
 
 //CO DODĚLAT: tlačitka, ukladani json + ukladani, nacitani s .csv ručně
@@ -176,7 +178,16 @@ public class Obchod {     //Přidat panel tlačítek s tlačítkama pro přidáv
     }
     public static void vytvorHlavniOkno() {
         JFrame hlavniOkno = new JFrame();
-        hlavniOkno.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        hlavniOkno.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        hlavniOkno.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (JOptionPane.showConfirmDialog(hlavniOkno, "Opravdu si přejete ukončit aplikaci?", "Ukončit?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+                    System.exit(0);
+                }
+            }
+        });
+        hlavniOkno.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         hlavniOkno.setTitle("Obchod");
         hlavniOkno.setLocationByPlatform(true);
         hlavniOkno.setResizable(false);

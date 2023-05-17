@@ -2,6 +2,7 @@ package model;
 
 import serdes.SerDes;
 
+import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 
 import java.io.IOException;
@@ -129,10 +130,23 @@ public class Sklad extends AbstractTableModel { //tímto zdědíme sklad, musi s
 
         switch (columnIndex) {
             case SLOUPEC_NAZEV -> zbozi.setNazev((String)hodnota);
-            case SLOUPEC_CENA -> zbozi.setCena((Float)hodnota);
-            case SLOUPEC_POCET -> zbozi.setPocet((Integer)hodnota);
+            case SLOUPEC_CENA -> {
+                if ((Float) hodnota < 0) {
+                    zbozi.setCena(0);
+                } else {
+                    zbozi.setCena((Float)hodnota);
+                }
+            }
+            case SLOUPEC_POCET -> {
+                if ((Integer) hodnota < 0) {
+                    zbozi.setPocet(0);
+                } else {
+                    zbozi.setPocet((Integer)hodnota);
+                }
+            }
             default -> throw new IllegalArgumentException("Nesprávný sloupec skladu");
         }
+
 
         fireTableCellUpdated(rowIndex, columnIndex); //která buňka se změnila a zareaguje a aktualizuje v skladě
     }
